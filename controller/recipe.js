@@ -3,11 +3,10 @@ import { Recipe } from "../models/recipe.js";
 
 export const newRecipe = async (req, res, next) => {
   const { title, ingredients, description, cookTime } = req.body;
-
   const { buffer, mimetype } = req.file;
 
   try {
-    // Check if a recipe with the same title already exists
+  
     const existingRecipe = await Recipe.findOne({ title });
 
     if (existingRecipe) {
@@ -16,8 +15,6 @@ export const newRecipe = async (req, res, next) => {
         message: "Recipe already exists with the same title",
       });
     }
-
-    // Create the new recipe with the image
     await Recipe.create({
       title,
       image: {

@@ -5,8 +5,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "set NODE_ENV=Production&& nodemon server.js",
-    "dev": "set NODE_ENV=Development&& nodemon server.js"
+    "start": "set NODE_ENV=Production && nodemon server.js",
+    "dev": "set NODE_ENV=Development && nodemon server.js"
   },
   "author": "",
   "license": "ISC",
