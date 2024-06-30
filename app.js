@@ -23,7 +23,7 @@ config({
 app.use(express.json());
 app.use(cookieParser())
 app.use(cors({
-    origin:['http://localhost:5173'],
+    origin:['http://recipebuckett.s3-website-ap-southeast-2.amazonaws.com'],
     methods : ["GET","POST","PUT","DELETE"],
     credentials:true,
 }))
