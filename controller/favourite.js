@@ -1,14 +1,12 @@
 
 import { Favourite } from "../models/favourite.js";
 import { Recipe } from "../models/recipe.js";
-// import ErrorHandler from "../middleware/error.js";
 
 export const addFavourite = async (req, res, next) => {
   const { recipeId } = req.body;
-  const userId = req.user._id; // The user ID from the authenticated user
+  const userId = req.user._id; 
 
   try {
-    // Check if the recipe exists
     const recipe = await Recipe.findById(recipeId);
     if (!recipe) {
       return res.status(404).json({
@@ -17,7 +15,6 @@ export const addFavourite = async (req, res, next) => {
       });
     }
 
-    // Check if the recipe already exists in the user's favorites
     const existingFavourite = await Favourite.findOne({ userId, recipeId });
 
     if (existingFavourite) {
@@ -26,8 +23,6 @@ export const addFavourite = async (req, res, next) => {
         message: "Recipe already in favorites",
       });
     }
-
-    // Create a new favorite entry
     await Favourite.create({
       userId,
       recipeId,

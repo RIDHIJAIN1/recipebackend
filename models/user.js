@@ -19,7 +19,17 @@ import mongoose from "mongoose";
     createdAt:{
       type:Date,
       default:Date.now
+    },
+    blocked:{
+      type:Boolean,
+      default:false
+    },
+    isAdmin: {
+      type: Boolean,
+      default: false,
     }
+
+    
   });
 
  export const User = mongoose.model("User",schema);

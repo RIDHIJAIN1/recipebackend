@@ -6,14 +6,8 @@ import mongoose from "mongoose";
         required: true,
        },
        image:{
-         data:{
-          type:Buffer,
-          required:true 
-         },
-         contentType:{
-          type:String,
+         type:String,
          required:true,
-         },
        },
     ingredients:{
      type:String,
@@ -34,6 +28,7 @@ import mongoose from "mongoose";
       type:Date,
       default:Date.now
     }
+ 
   });
 
  export const Recipe = mongoose.model("Recipe",schema);

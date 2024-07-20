@@ -1,18 +1,34 @@
+// isAuthenticated.js (middleware)
+import jwt from "jsonwebtoken";
 import { User } from "../models/user.js";
-import  jwt  from "jsonwebtoken";
 
-export const isAuthenticated=async(req,res,next)=>{
-    const {token} = req.cookies;
+export const isAuthenticated = async (req, res, next) => {
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
 
-    if(!token)
-    return res.status(404).json({
-        success:false,
-        message: "Login First"
-    })
+    if (!token) {
+      return res.status(401).json({
+        success: false,
+        message: "No token provided",
+      });
+    }
 
-   const decoded = jwt.verify(token , process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = await User.findById(decoded.id);
 
-   req.user = await User.findById(decoded._id);
-   next();
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: "User not found",
+      });
+    }
 
-}
+    next();
+  } catch (error) {
+    console.error("Authentication error:", error);
+    return res.status(401).json({
+      success: false,
+      message: "Unauthorized",
+    });
+  }
+};

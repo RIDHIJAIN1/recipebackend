@@ -2,8 +2,8 @@ import ErrorHandler from "../middleware/error.js";
 import { Recipe } from "../models/recipe.js";
 
 export const newRecipe = async (req, res, next) => {
-  const { title, ingredients, description, cookTime } = req.body;
-  const { buffer, mimetype } = req.file;
+  const { title, ingredients, description, cookTime} = req.body;
+  const image = `/uploads/${req.file.filename}`;
 
   try {
   
@@ -17,13 +17,11 @@ export const newRecipe = async (req, res, next) => {
     }
     await Recipe.create({
       title,
-      image: {
-        data: buffer,
-        contentType: mimetype,
-      },
+      image,
       ingredients,
       description,
       cookTime,
+   
     });
 
     res.status(201).json({
@@ -46,7 +44,7 @@ export const getRecipe = async (req, res) => {
     const recipe = await Recipe.find({});
     res.json({
       success: true,
-      recipe,
+      recipe: recipe,
     });
   } catch (error) {
     console.error("Error fetching recipes:", error);
@@ -87,11 +85,14 @@ export const oneRecipe = async (req, res) => {
 // ----------------------------------UpdateRecipe---------------
 export const updateRecipe = async (req, res) => {
   const { id } = req.params;
+
   const { title, ingredients, description, cookTime } = req.body;
   try {
     const recipe = await Recipe.findById(id);
 
-    if (!recipe) return next(new ErrorHandler("Invalid", 404));
+    if (!recipe) {
+      return res.status(404).json({ message: 'Recipe not found.' });
+  }
 
     recipe.title = title;
     recipe.description = description;
@@ -99,6 +100,10 @@ export const updateRecipe = async (req, res) => {
     recipe.ingredients = ingredients;
     recipe.cookTime = cookTime;
 
+    if (req.file) {
+      recipe.image = `/uploads/${req.file.filename}`;
+    }
+     console.log(req.body);
     await recipe.save();
 
     res.json({
@@ -113,6 +118,24 @@ export const updateRecipe = async (req, res) => {
     });
   }
 };
+
+//----------------------------RecipeCount--------------------
+export const countRecipe =  async (req, res) => {
+  try {
+    // const recipeCount = await Recipe.countDocuments();
+    const recipeCount = await Recipe.countDocuments();
+
+    console.log(`\n\n${recipeCount}\n\n`);
+    res.json({
+      success: true,
+      recipeCount,
+    });
+  }
+  catch (error) {
+    console.error("Error fetching total recipes:", error);
+    res.status(500).json({ error: "Error fetching total recipes" });
+  }
+}
 
 // ---------------------------deletedRecipe------------------------
 
