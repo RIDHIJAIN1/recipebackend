@@ -78,7 +78,7 @@ export const loginFunc = async(req,res,next)=>{
     const{email,password} = req.body;
     const user = await User.findOne({email}).select("+password")
    
-    if (user.blocked) {
+    if (user && user.blocked) {
       return res.status(403).json({ success: false, message: 'User is blocked' });
     }
 
@@ -96,15 +96,18 @@ export const loginFunc = async(req,res,next)=>{
         message: "Invalid email or password"
      });
 
-    const isAdmin = user.isAdmin;
-     const token = jwt.sign({ id: user._id , isAdmin}, process.env.JWT_SECRET, { expiresIn: '1d' });
+ 
+     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
    
 
   res.status(201).json({
     success:true,
     token,
+    user,
     message:`Welcome back, ${user.name}`
+  
   })
+  console.log(user)
 }
 
 //-----------------userCount-------------------------
